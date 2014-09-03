@@ -1,0 +1,81 @@
+#!/usr/bin/python
+
+import sys, subprocess, os
+
+readme = sys.argv[1]
+directory = sys.argv[2:]
+if (len(directory) == 0):
+    directory = ['.']
+
+def gitgrep(flag, search):
+    cmd = ['git', 'grep', '-FI', flag, search.strip()]
+    cmd.extend(directory)
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    (out, err) = proc.communicate()
+    found = out.split('\n')
+    if '' in found:
+        found.remove('')
+    for f in found:
+        if readme in f:
+            found.remove(f)
+    return found
+
+def contains(search):
+    found = gitgrep('-l', search)
+    return found
+
+def prefix(search):
+    idx = search.find('FIXME')
+    return search[0:idx]
+
+def replace(search):
+    replaced = False
+    pfix = prefix(search)
+
+    for file in contains(search):
+        replaced = True
+        lineno = -1
+        fh = open(file)
+        for ln in fh:
+            if search in ln:
+                lineno = 0
+            elif lineno > -1:
+                if pfix in ln:
+                    print ln.replace(pfix, '', 1),
+                elif pfix.strip() in ln:
+                    if lineno > 0:
+                        print
+                    lineno += 1
+                else:
+                    lineno = -1
+            else:
+                pass
+        fh.close()
+    return replaced
+
+def leftovers(left):
+    found = gitgrep('-n', 'FIXME')
+    for ln in found:
+        for search in left:
+            if search in ln:
+                found.remove(ln)
+                break
+    if len(found) > 0:
+        print
+    for ln in found:
+        print ln
+
+def main():
+    fh = open(readme)
+    done = []
+
+    for ln in fh:
+        if 'FIXME' in ln:
+            if replace(ln):
+                done.append(ln.rstrip())
+        else:
+            print ln,
+
+    leftovers(done)
+
+main()
