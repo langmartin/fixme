@@ -54,7 +54,7 @@ def replace(search):
     return replaced
 
 def leftovers(left):
-    found = gitgrep('-n', 'FIXME')
+    found = gitgrep('-nz', 'FIXME')
     for ln in found:
         for search in left:
             if search in ln:
@@ -63,7 +63,8 @@ def leftovers(left):
     if len(found) > 0:
         print
     for ln in found:
-        print ln
+        (file, num, text) = ln.split('\0')
+        print '[[file:%s::%s][%s]]' % (file, num, text)
 
 def main():
     fh = open(readme)
