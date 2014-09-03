@@ -1,0 +1,43 @@
+#+TITLE:     fixme for Illiterate Programming
+#+AUTHOR:    Lang Martin
+#+EMAIL:     lmartin@opentable.com
+
+fixme is a little tool that lets you lift FIXME comment blocks up
+into a structured top level document.
+
+1. Make a comment block that begins with the word 'FIXME'
+   : ## FIXME: turrible-bug
+   : ## No seriously, this is awful, and still broken!
+
+2. In the document, copy the line that actually contains
+   the word FIXME verbatim.
+   : Feature Foo
+   : ===========
+   : We hit a snag, and here are some thoughts about it:
+   : ## FIXME: turrible-bug
+
+3. Run =fixme README.txt > output.txt=
+
+The text of the comment is inserted into the document at the point
+it's referenced. The 'FIXME' line itself is stripped. The prefix
+defined by the 'FIXME' line is stripped from each following line. The
+comment block continues until the first line that fails to contain the
+prefix.
+
+At the bottom of the document, unreferenced FIXME notes are printed
+out.
+
+That's it!
+
+I use fixme to make org-mode formatted comments in my code, including
+TODO and deadlines and so forth. I use fixme to compile those into a
+README document that serves as structured documentation.
+
+I have better luck getting other developers to read the comments in
+the code than the README at the top, reduce merge conflicts, and still
+get to use org-mode TODOs in the README to document and organize a
+project (which is awesome).
+
+Keeping documentation in the repository is nice because, for free,
+you get documentation which reflects the branch structure in the
+project!
