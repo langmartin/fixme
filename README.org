@@ -41,3 +41,14 @@ project (which is awesome).
 Keeping documentation in the repository is nice because, for free,
 you get documentation which reflects the branch structure in the
 project!
+
+* Features
+** TODO Backlinks
+
+A backlink marker that a comment block can use to create a link back
+to it's location in the source file.
+
+** TODO One Liners
+** TODO an Explicit Leftovers Marker
+
+Also a template.
